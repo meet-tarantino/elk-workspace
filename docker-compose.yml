@@ -1,0 +1,32 @@
+version: '2'
+services:
+
+  ####### infrastructure
+
+  elasticsearch:
+    image: elasticsearch
+
+  kibana:
+    image: kibana
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+
+  logstash:
+    build: ./logstash
+    environment:
+      ELK_ES_HOST: elasticsearch:9200
+      ELK_LOGSTASH_UDP_PORT: 9999
+
+  ####### services
+
+  testapp:
+    image: node:6-alpine
+    command: node .
+    environment:
+      testapp_logstash__host: logstash
+      testapp_logstash__port: 9999
+    volumes:
+      - ${TT_PROJECTS}/testapp:/app:ro
+    working_dir: /app
+    labels:
+       com.tarantino.source: git@github.com:meet-tarantino/testapp.git
