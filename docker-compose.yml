@@ -15,7 +15,9 @@ services:
     build: ./logstash
     environment:
       ELK_ES_HOST: elasticsearch:9200
-      ELK_LOGSTASH_UDP_PORT: 9999
+      ELK_LOGSTASH_UDP_PORT: 21398
+    ports:
+      - "localhost:21398:21398/udp"
 
   ####### services
 
@@ -28,6 +30,6 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: udp://172.19.0.3:9999
+        gelf-address: udp://localhost:21398
     labels:
        com.tarantino.source: git@github.com:meet-tarantino/testapp.git
